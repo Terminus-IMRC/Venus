@@ -17,6 +17,7 @@ module insn_decoder #(
 
   /* opecode */
 
+  /*
   function [1:0] decode_opecode;
     input [LEN_OPECODE-1:0] opecode;
     case (opecode)
@@ -24,9 +25,9 @@ module insn_decoder #(
       default: decode_opecode = 1'b1;
     endcase
   endfunction
+  */
 
-  assign opecode_o = decode_opecode(
-    insn[LEN_OPECODE + SHIFT_OPECODE - 1 : SHIFT_OPECODE]);
+  assign opecode_o = insn[LEN_OPECODE + SHIFT_OPECODE - 1 : SHIFT_OPECODE];
 
 
   /* registers */
