@@ -31,7 +31,22 @@ module insn_decoder #(
 
   /* registers */
 
-  a1
+  assign rd_o = insn[LEN_REGNO + SHIFT_RD - 1 : SHIFT_RD];
+  assign rs_o = insn[LEN_REGNO + SHIFT_RS - 1 : SHIFT_RS];
+
+  register_general register (
+    .clk(clk),
+    .rst(rst),
+    .w_reserved_i(1'b0),
+    .r0_i(rd_o),
+    .r1_i(rs_o),
+    .r_opr0_o(),
+    .r_opr1_o(),
+    .reserved_o(),
+    .wb_i(1'b0),
+    .wb_r_i(4'b0000),
+    .result_i() /* Data*/
+  );
 
 
   /* cc */

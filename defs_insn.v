@@ -17,4 +17,5 @@ parameter SHIFT_IMM = 0,
 
 /* Misc */
 parameter LEN_INSN = 32,
+parameter LEN_REG = 32,
 parameter NUM_REGS = 1 << LEN_REGNO
