@@ -31,6 +31,13 @@ parameter OPECODE_ASH = 7'b000_1010,
 parameter OPECODE_ROL = 7'b000_1100,
 parameter OPECODE_ROR = 7'b000_1101,
 
+parameter OPECODE_LD  = 7'b001_1000,
+parameter OPECODE_ST  = 7'b001_1001,
+
+/* Memory */
+parameter MEM_ADDR = 16,
+parameter MEM_LEN = 65536,
+
 /* Misc */
 parameter LEN_INSN = 32,
 parameter LEN_REG = 32,

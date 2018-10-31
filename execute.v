@@ -4,21 +4,24 @@
 module execute #(
 `include "defs_insn.v"
 ) (
+  input wire clk,
+  input wire rst,
   input wire [LEN_OPECODE-1:0] opecode,
   input wire [LEN_IMMF-1:0] immf,
   input wire [LEN_REG-1:0] data_rd,
   input wire [LEN_REG-1:0] data_rs,
   input wire [LEN_CC-1:0] cc,
   input wire [LEN_IMM_EX-1:0] imm_ex,
-  output wire [LEN_REG-1:0] data_o
+  output wire [LEN_REG-1:0] data_o,
+  output wire [LEN_REG-1:0] data_o_forward
 );
 
   wire [LEN_REG-1:0] data_div, data_mul, data_shift, data_logic, data_add;
+  reg [LEN_REG-1:0] data_o_reg;
+  assign data_o = data_o_reg;
 
   reg carry;
-  wire carry_i, carry_o;
-  assign carry_i = carry;
-  assign carry_o = carry;
+  wire carry_i = carry, carry_o = carry;
 
   execute_shift exec_shift (
     .opecode(opecode),
@@ -38,6 +41,15 @@ module execute #(
     .carry_i(carry_i),
     .data_o(data_add),
     .carry_o(carry_o)
+  );
+
+  execute_mem exec_mem (
+    .clk(clk),
+    .opecode(opecode),
+    .data_rd(data_rd),
+    .data_rs(data_rs),
+    .imm_ex(imm_ex),
+    .data_o(data_o_forward)
   );
 
   function [LEN_REG-1:0] select_data (
@@ -61,8 +73,14 @@ module execute #(
     endcase
   endfunction
 
-  assign data_o = select_data(opecode,
-    data_div, data_mul, data_shift, data_logic, data_add);
+  always @(negedge rst) begin
+    carry <= 1'b0;
+  end
+
+  always @(posedge clk) begin
+    data_o_reg <= select_data(opecode,
+        data_div, data_mul, data_shift, data_logic, data_add);
+  end
 
 endmodule
 
