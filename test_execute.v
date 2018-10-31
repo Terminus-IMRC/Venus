@@ -43,8 +43,8 @@ module test #(
 
     opecode = OPECODE_SHL;
     immf = 1'b0;
-    data_rd = 32'h1234_0000;
-    data_rs = 32'h0000_5678;
+    data_rd = 32'h0000_1234;
+    data_rs = 32'h0000_0008;
     imm_ex = 32'hxxxx_xxxx;
     #(STEP);
 

@@ -20,6 +20,15 @@ module execute #(
   assign carry_i = carry;
   assign carry_o = carry;
 
+  execute_shift exec_shift (
+    .opecode(opecode),
+    .immf(immf),
+    .data_rd(data_rd),
+    .data_rs(data_rs),
+    .imm_ex(imm_ex),
+    .data_o(data_shift)
+  );
+
   execute_add exec_add (
     .opecode(opecode),
     .immf(immf),
