@@ -54,6 +54,27 @@ module test #(
     imm_ex = 32'hxxxx_xxxx;
     #(STEP);
 
+    opecode = OPECODE_LD;
+    immf = 1'bx;
+    data_rd = 32'hxxxx_xxxx;
+    data_rs = 32'h0000_0000;
+    imm_ex = 32'h0000_0000;
+    #(STEP);
+
+    opecode = OPECODE_ST;
+    immf = 1'bx;
+    data_rd = 32'h0000_0000;
+    data_rs = 32'hbeaf_dead;
+    imm_ex = 32'h0000_0000;
+    #(STEP);
+
+    opecode = OPECODE_LD;
+    immf = 1'bx;
+    data_rd = 32'hxxxx_xxxx;
+    data_rs = 32'h0000_0000;
+    imm_ex = 32'h0000_0000;
+    #(STEP);
+
     #(STEP);
     $finish;
   end
@@ -62,7 +83,8 @@ module test #(
     if (~rst) begin
       $display("Being reset...");
     end else begin
-      $display("data_o = 0x%08x", data_o);
+      $display("data_o = 0x%08x, data_o_forward = 0x%08x",
+          data_o, data_o_forward);
     end
     $display("-------------------------------");
   end

@@ -13,7 +13,6 @@ module execute_mem #(
 );
 
   wire mem_w = (opecode == OPECODE_ST) ? 1'b1 : 1'b0;;
-  wire [LEN_REG-1:0] mem_data_i = data_rs, mem_data_o = data_o;
   /* xxx: Negative addr is invalid. */
   wire [MEM_ADDR-1:0] mem_addr =
       ((opecode == OPECODE_LD) ? data_rs : data_rd) + imm_ex;
@@ -22,8 +21,8 @@ module execute_mem #(
     .clk(clk),
     .A(mem_addr),
     .W(mem_w),
-    .D(mem_data_i),
-    .Q(mem_data_o)
+    .D(data_rs),
+    .Q(data_o)
   );
 
 endmodule
