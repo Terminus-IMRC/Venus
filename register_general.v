@@ -17,6 +17,10 @@ module register_general #(
   input wire [LEN_REG-1:0] result_i /* Data to be written. */
 );
 
+  /*
+   * xxx: wb_r_i is always the same as r0_i?
+   */
+
 `include "ensel16.v"
 
   wire [NUM_REGS-1:0] w_reserved;

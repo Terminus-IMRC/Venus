@@ -7,6 +7,7 @@ module insn_decoder #(
   input wire clk,
   input wire rst,
   input wire [LEN_INSN-1:0] insn,
+  input wire [LEN_REG-1:0] wb_result,
   output wire [LEN_OPECODE-1:0] opecode_o,
   output wire [LEN_IMMF-1:0] immf_o,
   output wire [LEN_REGNO-1:0] rd_o,
@@ -19,18 +20,10 @@ module insn_decoder #(
 
   /* opecode */
 
-  /*
-  function [1:0] decode_opecode;
-    input [LEN_OPECODE-1:0] opecode;
-    case (opecode)
-      7'b000_0000: decode_opecode = 1'b0;
-      default: decode_opecode = 1'b1;
-    endcase
-  endfunction
-  */
-
   assign opecode_o = insn[LEN_OPECODE + SHIFT_OPECODE - 1 : SHIFT_OPECODE];
 
+  wire is_wb = (opecode_o == OPECODE_CMP || opecode_o == OPECODE_ST) ?
+      1'b0 : 1'b1;
 
   /* registers */
 
@@ -46,9 +39,9 @@ module insn_decoder #(
     .r_opr0_o(data_rd),
     .r_opr1_o(data_rs),
     .reserved_o(),
-    .wb_i(1'b0),
-    .wb_r_i(4'b0000),
-    .result_i() /* Data*/
+    .wb_i(is_wb),
+    .wb_r_i(rd_o),
+    .result_i(wb_result)
   );
 
 

@@ -1,8 +1,12 @@
 `default_nettype none
 
 
-module mem32x64k #(
+module memory_data #(
 `include "defs_insn.v"
+,
+  parameter MEM_ADDR = MEM_DATA_ADDR,
+  parameter MEM_LEN = MEM_DATA_LEN,
+  parameter MEM_FILE = MEM_DATA_FILE
 ) (
   input wire clk,
   input wire [MEM_ADDR-1:0] A,
@@ -25,7 +29,7 @@ module mem32x64k #(
   end
 
   initial begin
-    $readmemh("mem.dat", mem_bank);
+    $readmemh(MEM_FILE, mem_bank);
   end
 
 endmodule
