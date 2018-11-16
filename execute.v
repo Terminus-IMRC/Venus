@@ -6,6 +6,12 @@ module execute #(
 ) (
   input wire clk,
   input wire rst,
+
+  input wire valid_i,
+  input wire valid_o,
+  input wire stall_i,
+  input wire stall_o,
+
   input wire [LEN_OPECODE-1:0] opecode,
   input wire [LEN_IMMF-1:0] immf,
   input wire [LEN_REG-1:0] data_rd,
@@ -16,9 +22,13 @@ module execute #(
   output wire [LEN_REG-1:0] data_o_forward
 );
 
-  wire [LEN_REG-1:0] data_div, data_mul, data_shift, data_logic, data_add;
-  reg [LEN_REG-1:0] data_o_reg;
-  assign data_o = data_o_reg;
+  reg valid_reg;
+  assign valid_o = valid_reg;
+  assign stall_o = valid_reg & stall_i;
+
+  wire [LEN_REG-1:0] data_div, data_mul, data_shift, data_logic, data_add, data;
+  reg [LEN_REG-1:0] data_reg;
+  assign data_o = data_reg;
 
   reg carry;
   wire carry_i = carry, carry_o = carry;
@@ -73,13 +83,20 @@ module execute #(
     endcase
   endfunction
 
+  assign data = select_data(opecode,
+      data_div, data_mul, data_shift, data_logic, data_add);
+
   always @(negedge rst) begin
+    valid_reg <= 1'b0;
+    data_reg <= {LEN_REG{1'bx}};
     carry <= 1'b0;
   end
 
   always @(posedge clk) begin
-    data_o_reg <= select_data(opecode,
-        data_div, data_mul, data_shift, data_logic, data_add);
+    if (~stall_i) begin
+      valid_reg <= valid_i;
+      data_reg <= data;
+    end
   end
 
 endmodule

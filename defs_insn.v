@@ -37,11 +37,11 @@ parameter OPECODE_ST  = 7'b001_1001,
 /* Memory */
 parameter MEM_DATA_ADDR = 16,
 parameter MEM_DATA_LEN = 65536,
-parameter MEM_DATA_FILE = "mem.dat",
+parameter MEM_DATA_FILE = "mem_data.dathex",
 
 parameter MEM_INSN_ADDR = 16,
 parameter MEM_INSN_LEN = 65536,
-parameter MEM_INSN_FILE = "mem.dat",
+parameter MEM_INSN_FILE = "mem_insn.datbin",
 
 /* Misc */
 parameter LEN_INSN = 32,

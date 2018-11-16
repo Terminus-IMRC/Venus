@@ -3,6 +3,8 @@
 
 module register_cell #(
 `include "defs_insn.v"
+  ,
+  parameter INITIAL_DATA = {LEN_REG{1'bx}}
 ) (
   input wire clk,
   input wire rst,
@@ -23,7 +25,9 @@ module register_cell #(
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
       w_reserve <= 1'b0;
-      data <= {LEN_REG{1'bx}};
+      //data <= {LEN_REG{1'bx}};
+      //data <= {LEN_REG{1'b1}};
+      data <= INITIAL_DATA;
     end else begin
       if (w_reserve_i) begin
         w_reserve <= 1'b1;

@@ -23,7 +23,7 @@ module memory_insn #(
   end
 
   initial begin
-    $readmemh(MEM_FILE, mem_bank);
+    $readmemb(MEM_FILE, mem_bank);
   end
 
 endmodule

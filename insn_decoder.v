@@ -6,53 +6,56 @@ module insn_decoder #(
 ) (
   input wire clk,
   input wire rst,
+
+  input wire valid_i,
+  output wire valid_o,
+  input wire stall_i,
+  output wire stall_o,
+
   input wire [LEN_INSN-1:0] insn,
-  input wire [LEN_REG-1:0] wb_result,
   output wire [LEN_OPECODE-1:0] opecode_o,
   output wire [LEN_IMMF-1:0] immf_o,
   output wire [LEN_REGNO-1:0] rd_o,
   output wire [LEN_REGNO-1:0] rs_o,
   output wire [LEN_CC-1:0] cc_o,
-  output wire [LEN_IMM_EX-1:0] imm_o,
+  output wire [LEN_IMM_EX-1:0] imm_ex_o,
   output wire [LEN_REG-1:0] data_rd,
   output wire [LEN_REG-1:0] data_rs
 );
 
   /* opecode */
 
-  assign opecode_o = insn[LEN_OPECODE + SHIFT_OPECODE - 1 : SHIFT_OPECODE];
-
-  wire is_wb = (opecode_o == OPECODE_CMP || opecode_o == OPECODE_ST) ?
-      1'b0 : 1'b1;
+  reg [LEN_OPECODE-1:0] opecode_reg;
+  wire [LEN_OPECODE-1:0] opecode;
+  assign opecode = insn[LEN_OPECODE + SHIFT_OPECODE - 1 : SHIFT_OPECODE];
+  assign opecode_o = opecode_reg;
 
   /* registers */
 
-  assign rd_o = insn[LEN_REGNO + SHIFT_RD - 1 : SHIFT_RD];
-  assign rs_o = insn[LEN_REGNO + SHIFT_RS - 1 : SHIFT_RS];
-
-  register_general register (
-    .clk(clk),
-    .rst(rst),
-    .w_reserved_i(1'b0),
-    .r0_i(rd_o),
-    .r1_i(rs_o),
-    .r_opr0_o(data_rd),
-    .r_opr1_o(data_rs),
-    .reserved_o(),
-    .wb_i(is_wb),
-    .wb_r_i(rd_o),
-    .result_i(wb_result)
-  );
-
+  reg [LEN_REGNO-1:0] rd_reg, rs_reg;
+  wire [LEN_REGNO-1:0] rd, rs;
+  assign rd = insn[LEN_REGNO + SHIFT_RD - 1 : SHIFT_RD];
+  assign rs = insn[LEN_REGNO + SHIFT_RS - 1 : SHIFT_RS];
+  assign rd_o = rd_reg;
+  assign rs_o = rs_reg;
 
   /* cc */
 
-  assign cc_o = insn[LEN_CC + SHIFT_CC - 1 : SHIFT_CC];
+  reg [LEN_CC-1:0] cc_reg;
+  wire [LEN_CC-1:0] cc;
+  assign cc = insn[LEN_CC + SHIFT_CC - 1 : SHIFT_CC];
+  assign cc_o = cc_reg;
 
 
   /* imm */
 
-  assign immf_o = insn[LEN_IMMF + SHIFT_IMMF - 1 : SHIFT_IMMF];
+  reg [LEN_IMM_EX-1:0] imm_ex_reg;
+  reg [LEN_IMMF-1:0] immf_reg;
+  wire [LEN_IMM_EX-1:0] imm_ex;
+  wire [LEN_IMMF-1:0] immf;
+  assign immf = insn[LEN_IMMF + SHIFT_IMMF - 1 : SHIFT_IMMF];
+  assign imm_ex_o = imm_ex_reg;
+  assign immf_o = immf_reg;
 
   function [LEN_IMM_EX-1:0] imm_extend_sign;
     input [LEN_IMM-1:0] imm;
@@ -77,8 +80,28 @@ module insn_decoder #(
 
   wire [LEN_IMM-1:0] imm;
   assign imm = insn[LEN_IMM + SHIFT_IMM - 1 : SHIFT_IMM];
-  assign imm_o = decode_imm(opecode_o, immf_o, imm);
+  assign imm_ex = decode_imm(opecode, immf, imm);
 
+
+  reg valid_reg;
+  assign valid_o = valid_reg;
+  assign stall_o = valid_reg & stall_i;
+
+  always @(negedge rst) begin
+    valid_reg <= 1'b0;
+  end
+
+  always @(posedge clk) begin
+    if (~stall_i) begin
+      valid_reg <= valid_i;
+      opecode_reg <= opecode;
+      rd_reg <= rd;
+      rs_reg <= rs;
+      cc_reg <= cc;
+      imm_ex_reg <= imm_ex;
+      immf_reg <= immf;
+    end
+  end
 
 endmodule
 
