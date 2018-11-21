@@ -12,9 +12,7 @@ module insn_fetcher #(
   input wire stall_i,
   output wire stall_o,
 
-  output wire [LEN_INSN-1:0] insn_o,
-
-  input wire wb_reserved
+  output wire [LEN_INSN-1:0] insn_o
 );
 
   reg valid;

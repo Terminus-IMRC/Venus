@@ -22,8 +22,7 @@ module top #(
     .valid_o(valid_insnfetch_insndec),
     .stall_i(stall_insndec_insnfetch | wb_reserved),
     .stall_o(stall_insnfetch),
-    .insn_o(insn),
-    .wb_reserved(wb_reserved)
+    .insn_o(insn)
   );
 
   wire [LEN_OPECODE-1:0] opecode;
