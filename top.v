@@ -13,15 +13,17 @@ module top #(
   wire stall_insndec_insnfetch, stall_exec_insndec;
 
   wire [LEN_INSN-1:0] insn;
+  wire wb_reserved;
 
   insn_fetcher insnfetch (
     .clk(clk),
     .rst(rst),
     .valid_i(1'b1),
     .valid_o(valid_insnfetch_insndec),
-    .stall_i(stall_insndec_insnfetch),
+    .stall_i(stall_insndec_insnfetch | wb_reserved),
     .stall_o(stall_insnfetch),
-    .insn(insn)
+    .insn_o(insn),
+    .wb_reserved(wb_reserved)
   );
 
   wire [LEN_OPECODE-1:0] opecode;
@@ -35,13 +37,12 @@ module top #(
   wire [LEN_REG-1:0] wb_data, data_o, data_o_forward;
   wire [LEN_REGNO-1:0] wb_regno;
 
-  wire wb_reserved;
 
 
   register_general register (
     .clk(clk),
     .rst(rst),
-    .w_reserved_i(1'b0),
+    .w_reserved_i(1'b1), /* xxx */
     .rd_regno_i(rd_regno),
     .rs_regno_i(rs_regno),
     .rd_data_o(data_rd),
@@ -80,7 +81,7 @@ module top #(
 
     .valid_i(valid_insndec_exec),
     .valid_o(),
-    .stall_i(1'b0),
+    .stall_i(wb_reserved),
     .stall_o(stall_exec_insndec),
 
     .opecode(opecode),

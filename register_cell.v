@@ -16,6 +16,9 @@ module register_cell #(
 );
 
   reg [LEN_REG-1:0] data;
+  /* 0: Register is not being written.
+   * 1: Register is being written, so not to be read by following insn.
+   */
   reg w_reserve;
 
   assign data_o = data;
@@ -26,16 +29,13 @@ module register_cell #(
     if (~rst) begin
       w_reserve <= 1'b0;
       //data <= {LEN_REG{1'bx}};
-      //data <= {LEN_REG{1'b1}};
       data <= INITIAL_DATA;
     end else begin
-      if (w_reserve_i) begin
-        w_reserve <= 1'b1;
-      end else if (wb_i) begin
-        w_reserve <= 1'b0;
-      end
       if (wb_i) begin
         data <= data_i;
+        w_reserve <= 1'b0;
+      end else if (w_reserve_i) begin
+        w_reserve <= 1'b1;
       end
     end
   end
