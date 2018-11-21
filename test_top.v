@@ -24,7 +24,7 @@ module test #(
     #(STEP);
     rst = 1'b1;
 
-    #(STEP*8);
+    #(STEP*10);
 
     #(STEP);
     $finish;
