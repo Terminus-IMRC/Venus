@@ -45,5 +45,6 @@ parameter MEM_INSN_FILE = "mem_insn.dathex",
 
 /* Misc */
 parameter LEN_INSN = 32,
-parameter LEN_REG = 32,
+parameter BITS_REG = 5,
+parameter LEN_REG = 1 << BITS_REG,
 parameter NUM_REGS = 1 << LEN_REGNO
