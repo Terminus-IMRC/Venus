@@ -41,7 +41,7 @@ parameter MEM_DATA_FILE = "mem_data.dathex",
 
 parameter MEM_INSN_ADDR = 16,
 parameter MEM_INSN_LEN = 65536,
-parameter MEM_INSN_FILE = "mem_insn.datbin",
+parameter MEM_INSN_FILE = "mem_insn.dathex",
 
 /* Misc */
 parameter LEN_INSN = 32,
