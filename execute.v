@@ -8,9 +8,9 @@ module execute #(
   input wire rst,
 
   input wire valid_i,
-  input wire valid_o,
+  output wire valid_o,
   input wire stall_i,
-  input wire stall_o,
+  output wire stall_o,
 
   input wire [LEN_OPECODE-1:0] opecode,
   input wire [LEN_IMMF-1:0] immf,
