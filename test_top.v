@@ -40,18 +40,21 @@ module test #(
       $display("step = %d", step);
       $display("insn = 0x%08x", uut.insn);
       $display("insnfetch.addr = 0x%08x", uut.insnfetch.addr);
-      $display("stall_insnfetch = 0x%08x", uut.stall_insnfetch);
-      $display("is_wb = 0x%x", uut.is_wb);
-      $display("wb_reserved = 0x%x", uut.wb_reserved);
-      $display("wb_regno = 0x%08x", uut.wb_regno);
+      $display("stall_insnfetch         = %x", uut.stall_insnfetch);
+      $display("stall_insndec_insnfetch = %x", uut.stall_insndec_insnfetch);
+      $display("stall_exec_insndec      = %x", uut.stall_exec_insndec);
+      $display("valid_insnfetch_insndec = %x", uut.valid_insnfetch_insndec);
+      $display("valid_insndec_exec      = %x", uut.valid_insndec_exec);
+      $display("wb_reserved             = %x", uut.wb_reserved);
       $display("register.rd_exp    = 0b%b", uut.register.rd_exp);
       $display("register.rs_exp    = 0b%b", uut.register.rs_exp);
       $display("register.wb_exp    = 0b%b", uut.register.wb_exp);
       $display("register.w_reserve = 0b%b", uut.register.w_reserve);
+      $display("register.wb_r = 0x%08x", uut.register.wb_r);
+      $display("register.r0.w_reserve = 0b%b", uut.register.r0.w_reserve);
       $display("register.r1.w_reserve = 0b%b", uut.register.r1.w_reserve);
-      $display("register.r1.data = 0x%x", uut.register.r1.w_reserve);
-      $display("data_o = 0x%08x", uut.data_o);
-      $display("register.r[0123].data = 0x%08x 0x%08x 0x%08x 0x%08x",
+      $display("data_o = 0x%x", uut.data_o);
+      $display("register.r[0123].data = 0x%x 0x%x 0x%x 0x%x",
           uut.register.r0.data,
           uut.register.r1.data,
           uut.register.r2.data,
