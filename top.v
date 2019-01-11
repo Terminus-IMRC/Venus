@@ -79,7 +79,7 @@ module top #(
     .rst(rst),
 
     .valid_i(valid_insndec_exec),
-    .valid_o(valid_exec_wb),
+    .valid_o(),
     .stall_i(wb_reserved),
     .stall_o(stall_exec_insndec),
 
@@ -99,7 +99,9 @@ module top #(
     .rst(rst),
 
     .valid_i(valid_insndec_exec),
+    .valid_o(),
     .stall_i(wb_reserved),
+    .stall_o(),
 
     .opecode(opecode),
     .rd_regno(rd_regno),
