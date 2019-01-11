@@ -12,22 +12,21 @@ module insn_fetcher #(
   input wire stall_i,
   output wire stall_o,
 
-  output wire [LEN_INSN-1:0] insn_o
+  output wire [LEN_INSN-1:0] insn_o,
+  output wire [MEM_INSN_ADDR-1:0] addr_o
 );
 
-  reg valid;
+  reg valid_reg;
+  assign valid_o = valid_reg;
+  assign stall_o = valid_reg & stall_i;
 
   reg [MEM_INSN_ADDR-1:0] addr_reg, addr_prev;
-  wire [MEM_INSN_ADDR-1:0] addr, addr_next;
-  assign addr_next = addr_reg + 1'b1;
-  assign addr = stall_i ? addr_prev : addr_reg;
+  wire [MEM_INSN_ADDR-1:0] addr = stall_i ? addr_prev : addr_reg;
+  wire [MEM_INSN_ADDR-1:0] addr_next = addr_reg + 1'b1;
+  assign addr_o = addr_prev;
 
   wire [LEN_INSN-1:0] insn_cur;
-  reg [LEN_INSN-1:0] insn_prev;
-  assign insn_o = stall_i ? insn_prev : insn_cur;
-
-  assign valid_o = valid;
-  assign stall_o = valid & stall_i;
+  assign insn_o = insn_cur;
 
   memory_insn mem (
     .clk(clk),
@@ -36,17 +35,16 @@ module insn_fetcher #(
   );
 
   always @(negedge rst) begin
-    valid <= 1'b0;
-    addr_reg  <= {MEM_INSN_ADDR{1'b0}};
+    valid_reg <= 1'b0;
+    addr_reg <= {MEM_INSN_ADDR{1'b0}};
     addr_prev <= {MEM_INSN_ADDR{1'b0}};
   end
 
   always @(posedge clk) begin
     if (~stall_i) begin
-      valid <= valid_i;
+      valid_reg <= valid_i;
       addr_reg <= addr_next;
       addr_prev <= addr_reg;
-      insn_prev <= insn_cur;
     end
   end
 

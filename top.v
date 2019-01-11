@@ -13,6 +13,7 @@ module top #(
   wire stall_insndec_insnfetch, stall_exec_insndec;
 
   wire [LEN_INSN-1:0] insn;
+  wire [MEM_INSN_ADDR-1:0] iaddr;
   wire wb_reserved;
 
   insn_fetcher insnfetch (
@@ -22,7 +23,8 @@ module top #(
     .valid_o(valid_insnfetch_insndec),
     .stall_i(stall_insndec_insnfetch),
     .stall_o(stall_insnfetch),
-    .insn_o(insn)
+    .insn_o(insn),
+    .addr_o(iaddr)
   );
 
 
