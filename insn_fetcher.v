@@ -21,17 +21,14 @@ module insn_fetcher #(
   assign stall_o = valid_reg & stall_i;
 
   reg [MEM_INSN_ADDR-1:0] addr_reg, addr_prev;
-  wire [MEM_INSN_ADDR-1:0] addr = stall_i ? addr_prev : addr_reg;
   wire [MEM_INSN_ADDR-1:0] addr_next = addr_reg + 1'b1;
+  wire [MEM_INSN_ADDR-1:0] addr = stall_i ? addr_prev : addr_reg;
   assign addr_o = addr_prev;
-
-  wire [LEN_INSN-1:0] insn_cur;
-  assign insn_o = insn_cur;
 
   memory_insn mem (
     .clk(clk),
     .A(addr),
-    .Q(insn_cur)
+    .Q(insn_o)
   );
 
   always @(negedge rst) begin
