@@ -18,9 +18,7 @@ module insn_decoder #(
   output wire [LEN_REGNO-1:0] rd_o,
   output wire [LEN_REGNO-1:0] rs_o,
   output wire [LEN_CC-1:0] cc_o,
-  output wire [LEN_IMM_EX-1:0] imm_ex_o,
-  output wire [LEN_REG-1:0] data_rd,
-  output wire [LEN_REG-1:0] data_rs
+  output wire [LEN_IMM_EX-1:0] imm_ex_o
 );
 
   /* opecode */

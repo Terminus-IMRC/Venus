@@ -68,9 +68,7 @@ module top #(
     .rd_o(rd_regno),
     .rs_o(rs_regno),
     .cc_o(cc),
-    .imm_ex_o(imm_ex),
-    .data_rd(data_rd),
-    .data_rs(data_rs)
+    .imm_ex_o(imm_ex)
   );
 
 
