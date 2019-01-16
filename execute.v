@@ -42,6 +42,14 @@ module execute #(
     .data_o(data_shift)
   );
 
+  execute_logic exec_logic (
+    .opecode(opecode),
+    .data_rd(data_rd),
+    .data_rs(data_rs),
+    .imm_ex(imm_ex),
+    .data_o(data_logic)
+  );
+
   execute_add exec_add (
     .opecode(opecode),
     .immf(immf),
