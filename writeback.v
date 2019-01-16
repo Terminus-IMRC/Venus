@@ -22,11 +22,14 @@ module writeback #(
   input wire [LEN_REG-1:0] data_o,
   input wire [LEN_REG-1:0] data_o_forward,
   output wire [LEN_REGNO-1:0] wb_regno,
-  output wire [LEN_REG-1:0] wb_data
+  output wire [LEN_REG-1:0] wb_data,
+  input wire is_wb,
+  output wire do_wb
 );
 
   reg [LEN_OPECODE-1:0] opecode_reg;
   reg [LEN_REGNO-1:0] rd_regno_reg;
+  reg wb_reg;
 
   reg valid;
   assign valid_o = valid;
@@ -34,9 +37,11 @@ module writeback #(
 
   assign wb_regno = rd_regno_reg;
   assign wb_data = (opecode_reg == OPECODE_LD) ? data_o_forward : data_o;
+  assign do_wb = wb_reg;
 
   always @(negedge rst) begin
     opecode_reg <= OPECODE_CMP;
+    wb_reg <= 1'b0;
   end
 
   always @(posedge clk) begin
@@ -44,6 +49,7 @@ module writeback #(
       valid <= valid_i;
       opecode_reg <= opecode;
       rd_regno_reg <= rd_regno;
+      wb_reg <= is_wb;
     end
   end
 

@@ -41,6 +41,11 @@ parameter OPECODE_SETH = 7'b001_0111,
 parameter OPECODE_LD   = 7'b001_1000,
 parameter OPECODE_ST   = 7'b001_1001,
 
+parameter OPECODE_J    = 7'b001_1100,
+parameter OPECODE_JA   = 7'b001_1101,
+parameter OPECODE_NOP  = 7'b001_1110,
+parameter OPECODE_HLT  = 7'b001_1111,
+
 /* Memory */
 parameter MEM_DATA_ADDR = 16,
 parameter MEM_DATA_LEN = 65536,

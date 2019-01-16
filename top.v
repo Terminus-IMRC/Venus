@@ -69,6 +69,16 @@ module top #(
 
   wire [LEN_REG-1:0] wb_data, data_o, data_o_forward;
   wire [LEN_REGNO-1:0] wb_regno, wb_regno_reserved;
+  wire is_wb, do_wb;
+
+  assign is_wb = !(
+         (opecode == OPECODE_CMP)
+      || (opecode == OPECODE_ST)
+      || (opecode == OPECODE_J)
+      || (opecode == OPECODE_JA)
+      || (opecode == OPECODE_NOP)
+      || (opecode == OPECODE_HLT)
+  );
 
 
   register_general register (
@@ -80,8 +90,9 @@ module top #(
     .rd_data_o(data_rd),
     .rs_data_o(data_rs),
 
+    .do_wb(do_wb),
     /* XXX: This also means "this insn writes" I suspect. */
-    .w_reserved_i(!stall_exec_insndec),
+    .w_reserved_i(!stall_exec_insndec && valid_insndec_exec),
     .wb_regno_i(wb_regno),
     .wb_data_i(wb_data),
     .reserved_o(wb_reserved)
@@ -122,7 +133,9 @@ module top #(
     .data_o(data_o),
     .data_o_forward(data_o_forward),
     .wb_regno(wb_regno),
-    .wb_data(wb_data)
+    .wb_data(wb_data),
+    .is_wb(is_wb),
+    .do_wb(do_wb)
   );
 
 
