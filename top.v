@@ -13,8 +13,20 @@ module top #(
   wire stall_insndec_insnfetch, stall_exec_insndec;
 
   wire [LEN_INSN-1:0] insn;
-  wire [MEM_INSN_ADDR-1:0] iaddr;
   wire wb_reserved;
+
+  reg [MEM_INSN_ADDR-1:0] iaddr_reg;
+  wire [MEM_INSN_ADDR-1:0] iaddr_next = iaddr_reg + 1'b1;
+
+  always @(negedge rst) begin
+    iaddr_reg <= {MEM_INSN_ADDR{1'b0}};
+  end
+
+  always @(posedge clk) begin
+    if (~stall_insnfetch) begin
+      iaddr_reg <= iaddr_next;
+    end
+  end
 
   insn_fetcher insnfetch (
     .clk(clk),
@@ -24,7 +36,7 @@ module top #(
     .stall_i(stall_insndec_insnfetch),
     .stall_o(stall_insnfetch),
     .insn_o(insn),
-    .addr_o(iaddr)
+    .addr_i(iaddr_reg)
   );
 
 

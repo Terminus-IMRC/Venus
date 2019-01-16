@@ -39,7 +39,7 @@ module test #(
     end else begin
       $display("step = %d", step);
       $display("insn = 0x%x", uut.insn);
-      $display("iaddr = 0x%x", uut.iaddr);
+      $display("iaddr_reg = 0x%x", uut.iaddr_reg);
       $display("stall_insnfetch         = %x", uut.stall_insnfetch);
       $display("stall_insndec_insnfetch = %x", uut.stall_insndec_insnfetch);
       $display("stall_exec_insndec      = %x", uut.stall_exec_insndec);
