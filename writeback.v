@@ -37,7 +37,7 @@ module writeback #(
 
   assign wb_regno = rd_regno_reg;
   assign wb_data = (opecode_reg == OPECODE_LD) ? data_o_forward : data_o;
-  assign do_wb = wb_reg;
+  assign do_wb = wb_reg && valid;
 
   always @(negedge rst) begin
     opecode_reg <= OPECODE_CMP;

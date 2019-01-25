@@ -24,7 +24,7 @@ module test #(
     #(STEP);
     rst = 1'b1;
 
-    #(STEP*10);
+    #(STEP*20);
 
     #(STEP);
     $finish;
@@ -38,8 +38,9 @@ module test #(
       step <= 32'b0;
     end else begin
       $display("step = %d", step);
-      $display("insn = 0x%x", uut.insn);
       $display("iaddr_reg = 0x%x", uut.iaddr_reg);
+      $display("insn = 0x%x", uut.insn);
+      $display("opecode = 0b%b", uut.opecode);
       $display("stall_insnfetch         = %x", uut.stall_insnfetch);
       $display("stall_insndec_insnfetch = %x", uut.stall_insndec_insnfetch);
       $display("stall_exec_insndec      = %x", uut.stall_exec_insndec);
@@ -53,6 +54,8 @@ module test #(
       $display("register.wb_r = 0x%08x", uut.register.wb_r);
       $display("register.r0.w_reserve = 0b%b", uut.register.r0.w_reserve);
       $display("register.r1.w_reserve = 0b%b", uut.register.r1.w_reserve);
+      $display("register.r2.w_reserve = 0b%b", uut.register.r2.w_reserve);
+      $display("register.r3.w_reserve = 0b%b", uut.register.r3.w_reserve);
       $display("data_o = 0x%x", uut.data_o);
       $display("register.r[0123].data = 0x%x 0x%x 0x%x 0x%x",
           uut.register.r0.data,
