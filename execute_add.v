@@ -35,9 +35,8 @@ module execute_add #(
 
   wire [LEN_REG-1:0] in1, in2;
   assign in1 = data_rd;
-  assign in2 = (immf == 1'b0) ?
-    ((opecode == OPECODE_SUB || opecode == OPECODE_SBC) ?  ~data_rs : data_rs)
-    : imm_ex;
+  assign in2 = (opecode == OPECODE_SUB || opecode == OPECODE_SBC) ?
+    (immf ? ~imm_ex : ~data_rs) : (immf ? imm_ex : data_rs);
 
   function decide_carry (
     input [LEN_OPECODE-1:0] opecode,
@@ -56,7 +55,6 @@ module execute_add #(
   wire c_i, c_o;
   assign c_i = decide_carry(opecode, carry_i);
 
-  /* a's complement = ~a + 1 */
   assign {c_o, data_o} = in1 + in2 + c_i;
 
   assign carry_o = (opecode == OPECODE_SUB || opecode == OPECODE_SBC) ?
