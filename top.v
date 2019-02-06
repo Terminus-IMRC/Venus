@@ -23,11 +23,16 @@ module top #(
   wire [LEN_IMM_EX-1:0] imm_ex;
   wire [LEN_REGNO-1:0] rd_regno, rs_regno;
 
+  wire [LEN_FLAGS-1:0] flags;
+
 
   reg [MEM_INSN_ADDR-1:0] iaddr_reg, iaddr_prev_reg;
   wire [MEM_INSN_ADDR-1:0] iaddr_next = iaddr_reg + 1'b1;
   wire [MEM_INSN_ADDR-1:0] iaddr_next_bra =
       (opecode == OPECODE_J) ? (iaddr_prev_reg + imm_ex) : imm_ex[LEN_IMM-1:0];
+  wire is_taken_branch =
+         (opecode == OPECODE_J || opecode == OPECODE_JA)
+      && (flags & (1'b1 << cc));
 
   always @(negedge rst) begin
     iaddr_reg <= {MEM_INSN_ADDR{1'b0}};
@@ -36,8 +41,7 @@ module top #(
 
   always @(posedge clk) begin
     if (~stall_insnfetch) begin
-      if (valid_insndec_exec &&
-          (opecode == OPECODE_J || opecode == OPECODE_JA)) begin
+      if (valid_insndec_exec && is_taken_branch) begin
         iaddr_reg <= iaddr_next_bra;
       end else begin
         iaddr_reg <= iaddr_next;
@@ -49,9 +53,7 @@ module top #(
   insn_fetcher insnfetch (
     .clk(clk),
     .rst(rst),
-    .valid_i(valid_insndec_exec ?
-        !(opecode == OPECODE_J || opecode == OPECODE_JA)
-        : 1'b1),
+    .valid_i(valid_insndec_exec ? !is_taken_branch : 1'b1),
     .valid_o(valid_insnfetch_insndec),
     .stall_i(stall_insndec_insnfetch),
     .stall_o(stall_insnfetch),
@@ -65,9 +67,7 @@ module top #(
     .rst(rst),
     .valid_i(
         valid_insnfetch_insndec
-        && (valid_insndec_exec ?
-            !(opecode == OPECODE_J || opecode == OPECODE_JA)
-            : 1'b1)
+        && (valid_insndec_exec ? !is_taken_branch : 1'b1)
     ),
     .valid_o(valid_insndec_exec),
     .stall_i(stall_exec_insndec | wb_reserved),
@@ -131,7 +131,8 @@ module top #(
     .cc(cc),
     .imm_ex(imm_ex),
     .data_o(data_o),
-    .data_o_forward(data_o_forward)
+    .data_o_forward(data_o_forward),
+    .flags_o(flags)
   );
 
 

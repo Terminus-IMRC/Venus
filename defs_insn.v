@@ -59,4 +59,12 @@ parameter MEM_INSN_FILE = "mem_insn.dathex",
 parameter LEN_INSN = 32,
 parameter BITS_REG = 5,
 parameter LEN_REG = 1 << BITS_REG,
-parameter NUM_REGS = 1 << LEN_REGNO
+parameter NUM_REGS = 1 << LEN_REGNO,
+
+/* Flags */
+parameter LEN_FLAGS = 8,
+parameter FLAG_SHIFT_ZERO = 1,
+parameter FLAG_SHIFT_POS = 2,
+parameter FLAG_SHIFT_NEG = 3,
+parameter FLAG_SHIFT_CARRY = 4,
+parameter FLAG_SHIFT_OVERFLOW = 5

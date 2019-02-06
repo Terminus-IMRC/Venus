@@ -19,19 +19,30 @@ module execute #(
   input wire [LEN_CC-1:0] cc,
   input wire [LEN_IMM_EX-1:0] imm_ex,
   output wire [LEN_REG-1:0] data_o,
-  output wire [LEN_REG-1:0] data_o_forward
+  output wire [LEN_REG-1:0] data_o_forward,
+  output wire [LEN_FLAGS-1:0] flags_o
 );
 
   reg valid_reg;
   assign valid_o = valid_reg;
   assign stall_o = valid_reg & stall_i;
 
-  wire [LEN_REG-1:0] data_div, data_mul, data_shift, data_logic, data_add, data;
+  wire [LEN_REG-1:0] data_div, data_mul, data_shift, data_logic, data_add;
   reg [LEN_REG-1:0] data_reg;
   assign data_o = data_reg;
 
-  reg carry;
-  wire carry_i = carry, carry_o = carry;
+  reg carry_reg, overflow_reg;
+  wire is_zero, is_pos, is_neg, is_carry, is_overflow;
+  assign is_zero = (data_reg == {LEN_REG{1'b0}});
+  assign is_pos = ~data_reg[LEN_REG-1];
+  assign is_neg = data_reg[LEN_REG-1];
+  /* carry and overflow depend on the input data. */
+  assign is_carry = carry_reg;
+  assign is_overflow = overflow_reg;
+  assign flags_o =
+      {1'b0, 1'b0, is_overflow, is_carry, is_neg, is_pos, is_zero, 1'b1};
+  wire carry_add;
+
 
   execute_shift exec_shift (
     .opecode(opecode),
@@ -56,9 +67,9 @@ module execute #(
     .data_rd(data_rd),
     .data_rs(data_rs),
     .imm_ex(imm_ex),
-    .carry_i(carry_i),
+    .carry_i(carry_reg),
     .data_o(data_add),
-    .carry_o(carry_o)
+    .carry_o(carry_add)
   );
 
   execute_mem exec_mem (
@@ -91,19 +102,27 @@ module execute #(
     endcase
   endfunction
 
-  assign data = select_data(opecode,
+  wire [LEN_REG-1:0] data = select_data(opecode,
       data_div, data_mul, data_shift, data_logic, data_add);
+
+  wire overflow_add = (data_rd[LEN_REG-1] == data_rs[LEN_REG-1]
+      && data_rd[LEN_REG-1] != data[LEN_REG-1]);
 
   always @(negedge rst) begin
     valid_reg <= 1'b0;
     data_reg <= {LEN_REG{1'bx}};
-    carry <= 1'b0;
+    carry_reg <= 1'b0;
+    overflow_reg <= 1'b0;
   end
 
   always @(posedge clk) begin
     if (~stall_i) begin
       valid_reg <= valid_i;
       data_reg <= data;
+      if (valid_i) begin
+        carry_reg <= carry_add;
+        overflow_reg <= overflow_add;
+      end
     end
   end
 

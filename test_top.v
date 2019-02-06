@@ -39,6 +39,7 @@ module test #(
     end else begin
       $display("step = %d", step);
       $display("iaddr_reg = 0x%x", uut.iaddr_reg);
+      $display("flags = 0b%b", uut.flags);
       $display("insn = 0x%x", uut.insn);
       $display("opecode = 0b%b", uut.opecode);
       $display("stall_insnfetch         = %x", uut.stall_insnfetch);
